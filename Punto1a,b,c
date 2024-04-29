@@ -1,0 +1,80 @@
+ #include <stdio.h>
+#include <stdbool.h>
+
+// Definición de una estructura para almacenar los datos de una persona
+struct Persona {
+    char nombre[50];
+    char apellido[50];
+    int dni;
+};
+
+int main() {
+    struct Persona personas[100]; // Se asume un máximo de 100 personas
+    int num_personas = 0;
+    char opcion;
+
+    do {
+        // Mostrar el menú al usuario
+        printf("\nMenu:\n");
+        printf("a) Ingresar datos y guardar en archivo.\n");
+        printf("b) Buscar por DNI.\n");
+        printf("c) Salir.\n");
+        printf("Seleccione una opcion (a/b/c): ");
+        scanf(" %c", &opcion);
+
+        // Verificar la opción seleccionada por el usuario
+        switch(opcion) {
+            case 'a':
+            case 'A':
+                // Ingresar datos y guardar en archivo
+                printf("\nIngrese su nombre: ");
+                scanf("%s", personas[num_personas].nombre);
+
+                printf("Ingrese su apellido: ");
+                scanf("%s", personas[num_personas].apellido);
+
+                printf("Ingrese su DNI: ");
+                scanf("%d", &personas[num_personas].dni);
+
+                // Incrementar el contador de personas
+                num_personas++;
+                break;
+            case 'b':
+            case 'B':
+                // Buscar por DNI
+                if (num_personas == 0) {
+                    printf("\nNo hay datos ingresados para buscar.\n");
+                } else {
+                    int dni_buscar;
+                    bool encontrado = false;
+
+                    printf("\nIngrese el DNI a buscar: ");
+                    scanf("%d", &dni_buscar);
+
+                    // Buscar en el arreglo de personas
+                    for (int i = 0; i < num_personas; i++) {
+                        if (personas[i].dni == dni_buscar) {
+                            printf("\nDatos encontrados:\n");
+                            printf("Nombre: %s\n", personas[i].nombre);
+                            printf("Apellido: %s\n", personas[i].apellido);
+                            encontrado = true;
+                            break;
+                        }
+                    }
+
+                    if (!encontrado) {
+                        printf("\nNo se encontraron datos para el DNI ingresado.\n");
+                    }
+                }
+                break;
+            case 'c':
+            case 'C':
+                printf("\nSaliendo del programa.\n");
+                break;
+            default:
+                printf("\nOpcion no valida.\n");
+        }
+    } while (opcion != 'c' && opcion != 'C');
+
+    return 0;
+}
