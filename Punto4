@@ -1,0 +1,163 @@
+ #include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+// Definición de una estructura para almacenar los datos de una persona
+struct Persona {
+    char nombre[50];
+    char apellido[50];
+    int dni;
+};
+
+// Función para verificar si una persona ya existe en el arreglo
+bool persona_existe(struct Persona personas[], int num_personas, char nombre[], char apellido[]) {
+    for (int i = 0; i < num_personas; i++) {
+        if (strcmp(personas[i].nombre, nombre) == 0 && strcmp(personas[i].apellido, apellido) == 0) {
+            return true; // La persona ya existe
+        }
+    }
+    return false; // La persona no existe
+}
+
+// Función para ordenar las personas por nombre y apellido
+void ordenar_por_nombre_apellido(struct Persona personas[], int num_personas) {
+    struct Persona temp;
+    for (int i = 0; i < num_personas - 1; i++) {
+        for (int j = 0; j < num_personas - i - 1; j++) {
+            if (strcmp(personas[j].apellido, personas[j + 1].apellido) > 0 ||
+                (strcmp(personas[j].apellido, personas[j + 1].apellido) == 0 && strcmp(personas[j].nombre, personas[j + 1].nombre) > 0)) {
+                temp = personas[j];
+                personas[j] = personas[j + 1];
+                personas[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Función para ordenar las personas por DNI
+void ordenar_por_dni(struct Persona personas[], int num_personas) {
+    struct Persona temp;
+    for (int i = 0; i < num_personas - 1; i++) {
+        for (int j = 0; j < num_personas - i - 1; j++) {
+            if (personas[j].dni > personas[j + 1].dni) {
+                temp = personas[j];
+                personas[j] = personas[j + 1];
+                personas[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    struct Persona personas[100]; // Se asume un máximo de 100 personas
+    int num_personas = 0;
+    char opcion;
+
+    do {
+        // Mostrar el menú al usuario
+        printf("\nMenu:\n");
+        printf("a) Ingresar datos y guardar en archivo.\n");
+        printf("b) Buscar por Apellido y Nombre.\n");
+        printf("c) Mostrar datos ordenados por Nombre y Apellido.\n");
+        printf("d) Mostrar datos ordenados por DNI.\n");
+        printf("e) Salir.\n");
+        printf("Seleccione una opcion (a/b/c/d/e): ");
+        scanf(" %c", &opcion);
+
+        // Verificar la opción seleccionada por el usuario
+        switch(opcion) {
+            case 'a':
+            case 'A':
+                // Ingresar datos y guardar en archivo
+                printf("\nIngrese su nombre: ");
+                scanf("%s", personas[num_personas].nombre);
+
+                printf("Ingrese su apellido: ");
+                scanf("%s", personas[num_personas].apellido);
+
+                // Validar si la persona ya existe
+                if (persona_existe(personas, num_personas, personas[num_personas].nombre, personas[num_personas].apellido)) {
+                    printf("La persona ya existe en la base de datos.\n");
+                    break;
+                }
+
+                printf("Ingrese su DNI: ");
+                scanf("%d", &personas[num_personas].dni);
+
+                // Incrementar el contador de personas
+                num_personas++;
+                break;
+            case 'b':
+            case 'B':
+                // Buscar por Apellido y Nombre
+                if (num_personas == 0) {
+                    printf("\nNo hay datos ingresados para buscar.\n");
+                } else {
+                    char nombre_buscar[50];
+                    char apellido_buscar[50];
+                    bool encontrado = false;
+
+                    printf("\nIngrese el nombre a buscar: ");
+                    scanf("%s", nombre_buscar);
+
+                    printf("Ingrese el apellido a buscar: ");
+                    scanf("%s", apellido_buscar);
+
+                    // Buscar en el arreglo de personas
+                    for (int i = 0; i < num_personas; i++) {
+                        if (strcmp(personas[i].nombre, nombre_buscar) == 0 &&
+                            strcmp(personas[i].apellido, apellido_buscar) == 0) {
+                            printf("\nDatos encontrados:\n");
+                            printf("Nombre: %s\n", personas[i].nombre);
+                            printf("Apellido: %s\n", personas[i].apellido);
+                            printf("DNI: %d\n", personas[i].dni);
+                            encontrado = true;
+                        }
+                    }
+
+                    if (!encontrado) {
+                        printf("\nNo se encontraron datos para el nombre y apellido ingresados.\n");
+                    }
+                }
+                break;
+            case 'c':
+            case 'C':
+                // Mostrar datos ordenados por Nombre y Apellido
+                if (num_personas == 0) {
+                    printf("\nNo hay datos ingresados para mostrar.\n");
+                } else {
+                    ordenar_por_nombre_apellido(personas, num_personas);
+                    printf("\nDatos ordenados por Nombre y Apellido:\n");
+                    for (int i = 0; i < num_personas; i++) {
+                        printf("Nombre: %s\n", personas[i].nombre);
+                        printf("Apellido: %s\n", personas[i].apellido);
+                        printf("DNI: %d\n", personas[i].dni);
+                    }
+                }
+                break;
+            case 'd':
+            case 'D':
+                // Mostrar datos ordenados por DNI
+                if (num_personas == 0) {
+                    printf("\nNo hay datos ingresados para mostrar.\n");
+                } else {
+                    ordenar_por_dni(personas, num_personas);
+                    printf("\nDatos ordenados por DNI:\n");
+                    for (int i = 0; i < num_personas; i++) {
+                        printf("Nombre: %s\n", personas[i].nombre);
+                        printf("Apellido: %s\n", personas[i].apellido);
+                        printf("DNI: %d\n", personas[i].dni);
+                    }
+                }
+                break;
+            case 'e':
+            case 'E':
+                printf("\nSaliendo del programa.\n");
+                break;
+            default:
+                printf("\nOpcion no valida.\n");
+        }
+    } while (opcion != 'e' && opcion != 'E');
+
+    return 0;
+}
